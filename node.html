@@ -1,0 +1,51 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Einstein-Platform-Services', {
+    category: 'function',
+    color: '#a6bbcf',
+    defaults: {
+      name: { value: "Einstein Platform Services" },
+      request_url: { value: "https://api.einstein.ai/v2/" },
+      default_feature: { value: "IMAGECLASSIFICATION" },
+      default_modelid: { value: "GeneralImageClassifier" },
+      account_id: { value: "" },
+      private_key: { value: "" }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "file.png",
+    label: function () {
+      return this.name || "Einstein-Platform-Services";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="Einstein-Platform-Services">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-request_url"><i class="icon-tag"></i> URL</label>
+    <input type="text" id="node-input-request_url" placeholder="Request URL" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-default_feature"><i class="icon-tag"></i> Default Feature</label>
+    <input type="text" id="node-input-default_feature" placeholder="Default Feature" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-default_modelid"><i class="icon-tag"></i> Default ModelId</label>
+    <input type="text" id="node-input-default_modelid" placeholder="Default ModelId" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-account_id"><i class="icon-tag"></i> Account ID</label>
+    <input type="text" id="node-input-account_id" placeholder="Account ID" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-private_key"><i class="icon-tag"></i> Private Key</label>
+    <textarea id="node-input-private_key" placeholder="Private Key"></textarea>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="Einstein-Platform-Services">
+  <p>Einstein Platform Services common access library.</p>
+</script>
