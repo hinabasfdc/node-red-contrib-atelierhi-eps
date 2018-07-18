@@ -1,3 +1,16 @@
+/*
+ * Einstein Platform Services for Node-RED
+ * Supported features:
+ *  API Usage
+ *  Vision - Image Classification
+ *  Vision - Object Detection
+ *  Language - Sentiment
+ *  Language - Intent
+ * Author: hinaba@salesforce.com
+ * 
+ * WARNING: This is NOT Salesforce supported library.
+ */
+
 module.exports = function (RED) {
   const jwt = require('jsonwebtoken');
   const request = require('request');
@@ -8,18 +21,40 @@ module.exports = function (RED) {
   function EinsteinPlatformServices(config) {
     RED.nodes.createNode(this, config);
 
-    this.request_url = config.request_url;
+    // Node parameter check
+    if (config.request_url.slice(-1) == "/") {
+      this.request_url = config.request_url;
+    } else {
+      this.request_url = config.request_url + "/";
+    }
+
     this.default_feature = config.default_feature;
     this.default_modelid = config.default_modelid;
-    this.account_id = config.account_id;
-    this.private_key = config.private_key;
+
+    if (config.account_id) {
+      this.account_id = config.account_id;
+    } else {
+      msg.payload = '{"message": "No account id."}';
+      node.send(msg);
+      return;
+    }
+
+    if (config.account_id) {
+      this.private_key = config.private_key;
+    } else {
+      msg.payload = '{"message": "No private key."}';
+      node.send(msg);
+      return;
+    }
 
     let node = this;
     node.on('input', function (msg) {
 
+      // Call getting access token function & execute prediction api call
       getAccessToken(node, msg, (access_token) => {
 
-        // Parameter Check & デフォルト値設定
+        // Msg parameter check & Set default value
+        if (!msg.eps) msg.eps = {};
         if (!msg.eps.feature) msg.eps.feature = node.default_feature;
         if (!msg.eps.modelid) msg.eps.modelid = node.default_modelid;
 
@@ -27,10 +62,10 @@ module.exports = function (RED) {
         let formData = {};
         formData.modelId = msg.eps.modelid;
 
-        // Vision or Language のいずれかの場合
+        // Vision or Language
         if (msg.eps.feature == "IMAGECLASSIFICATION" || msg.eps.feature == "OBJECTDETECTION" || msg.eps.feature == "SENTIMENT" || msg.eps.feature == "INTENT") {
 
-          // 予測する画像 or テキストを msg から抽出
+          // Get image or text from msg object
           if (msg.eps.sampleBase64Content) {
             formData.sampleBase64Content = msg.eps.sampleBase64Content;
           } else if (msg.eps.sampleLocation) {
@@ -43,6 +78,7 @@ module.exports = function (RED) {
             return;
           }
 
+          // Set api url
           if (msg.eps.feature == "IMAGECLASSIFICATION") {
             reqUrl = node.request_url + "vision/predict";
           } else if (msg.eps.feature == "OBJECTDETECTION") {
@@ -53,8 +89,8 @@ module.exports = function (RED) {
             reqUrl = node.request_url + "language/intent";
           }
 
-          //予測・解析を行うHTTPリクエスト文を組み立て
-          let reqOptionsPrediction = {
+          // Set request options
+          let reqOptionsApiCall = {
             url: reqUrl,
             headers: {
               'Authorization': 'Bearer ' + access_token,
@@ -64,42 +100,62 @@ module.exports = function (RED) {
             formData: formData
           }
 
-          //組み立てたリクエスト文を送信
-          request.post(reqOptionsPrediction, (error, response, body) => {
+          // Call api & set result to msg.payload
+          request.post(reqOptionsApiCall, (error, response, body) => {
             msg.payload = body;
             node.send(msg);
           });
 
-          // 特定できなかった場合
+          // API Usage
+        } else if (msg.eps.feature == "APIUSAGE") {
+
+          // Set api usage request option
+          let reqOptionsApiCall = {
+            url: node.request_url + "apiusage",
+            headers: {
+              'Authorization': 'Bearer ' + access_token,
+              'Cache-Control': 'no-cache'
+            }
+          }
+
+          // Call api usage api & Set result to msg.payload
+          request.get(reqOptionsApiCall, (error, response, body) => {
+            msg.payload = body;
+            node.send(msg);
+          });
+
+          // Other feature
         } else {
-          msg.payload = '{"message": "No feature founded."}';
+          msg.payload = '{"message": "No available feature founded."}';
           node.send(msg);
         }
+
       });
     });
   };
 
+  // Internal function for getting access token.
   function getAccessToken(node, msg, cb) {
 
-    console.log("[DEBUG]: TOKEN: " + TOKEN);
-    console.log("[DEBUG]: TOKEN_EXPIRE: " + TOKEN_EXPIRE);
+    //console.log("[DEBUG]: TOKEN: " + TOKEN);
+    //console.log("[DEBUG]: TOKEN_EXPIRE: " + TOKEN_EXPIRE);
 
     let current_time = Date.now();
     let expired = true;
 
-    // TOKEN の有効期限まで1分以上ある場合は、すでに取得済みの TOKEN を利用
+    // Re-use the token if it has over 60 secconds to expire.
     if (TOKEN_EXPIRE - current_time > 60000) {
       expired = false;
     }
 
-    // すでに取得済みの TOKEN を利用
+    // Return token
     if (TOKEN && !expired) {
-      console.log("[DEBUG]: Token is not expired.");
+      //console.log("[DEBUG]: Token is not expired.");
       cb(TOKEN);
 
-      // TOKEN を取得
+    // Get new token.
     } else {
-      console.log("[DEBUG]: Token is expired.");
+      //console.log("[DEBUG]: Token is expired.");
 
       // JWT payload
       let rsa_payload = {
@@ -107,7 +163,7 @@ module.exports = function (RED) {
         "aud": node.request_url + "oauth2/token"
       }
 
-      // TOKEN の有効期間を10分に設定
+      // Set token available time to 600 seconds.
       let rsa_options = {
         header: {
           "alg": "RS256",
@@ -123,8 +179,8 @@ module.exports = function (RED) {
         rsa_options
       );
 
-      //HTTPリクエストの組み立て
-      let options = {
+      // Set api request option.
+      let reqOptionsApiCall = {
         url: node.request_url + "oauth2/token",
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -133,16 +189,14 @@ module.exports = function (RED) {
         body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${encodeURIComponent(assertion)}`
       }
 
-      //組み立てたリクエスト文をPOSTで送信
-      //レンスポンスが返ってきたらファンクション内を実行
-      request.post(options, (error, response, body) => {
+      // Call access token api & set new token and callback function.
+      request.post(reqOptionsApiCall, (error, response, body) => {
         let data = JSON.parse(body);
         let access_token = data["access_token"];
 
-        // 取得した TOKEN を変数に格納(有効期限を10分後までに)
         TOKEN = access_token;
         TOKEN_EXPIRE = Date.now() + 600000;
-        console.log("[DEBUG]: Set new TOKEN.");
+        //console.log("[DEBUG]: Set new TOKEN.");
 
         cb(access_token);
       });
