@@ -1,116 +1,107 @@
-# Node-RED 用 Einstein Platform Services ノード
-## 概要
-Node-RED で Salesforce が提供する画像認識や自然言語処理の AI 機能である Einstein Platform Services を簡単に使えるようにする追加ノードです。  
-注意: このサンプルコードは、あくまで機能利用の1例を示すためのものであり、コードの書き方や特定ライブラリの利用を推奨したり、機能提供を保証するものではありません。
-## 利用方法
-### 1. 「Einstein Platform Services ノード」を Github からダウンロード
-1. $ cd [ワーク用ディレクトリに移動]
-2. $ git clone https://github.com/hinabasfdc/node-red-contrib-atelierhi-eps.git
-3. $ cd node-red-contrib-atelierhi-eps
-4. $ npm install
-### 2. Node-RED で使えるように設定
-1. (1-3.で移動したディレクトリで操作)
-2. $ npm link
-3. $ cd ~/.node-red
-4. $ npm link node-red-contrib-atelierhi-eps
+# node-red-contrib-atelierhi-eps
+A Node-RED node to easly access prediction APIs of the Salesforce Einstein Platform Services. (Vision/Language)
+* Read this in other languages:[日本語](README.ja.md)
+## Install
+* (Command) Run the following command in the root directory of your Node-RED install.
+```
+npm install -s node-red-contrib-atelierhi-eps 
+```
+* (Node-RED GUI) Install package from an "Manage palatte" menu.
+```
+node-red-contrib-atelierhi-eps
+```
+## Initial Setup
+* Drag & Drop "Einstein Platform Services" node from parette to an flow design workspace.
+* Double click the node dropped then input "Account ID" & "Private Key" fields.
+* If you don't have an account id & private key for the Einstein Platform Serviecs, you are able to get them from https://api.einstein.ai/signup.
 
-以上の操作で、Node-REDを起動するとパレットに「Einstein Platform Services」が出現します。  
-パレットからワークスペースにドラッグし、"Account ID"と"Private Key"の二つを設定してください。
+## Sample Flow
+### API Usage
+1. Drag & drop "inject" node.
+2. Drag & drop "function" node.
+    * Name: 
+```
+Test Api Usage
+```
+    * Function: 
+```
+msg.eps = {};
+msg.eps.feature = "APIUSAGE";
+return msg;
+```
+3. Drag & drop "Einstein Platform Services" node.
+    * Account ID: Set your account id.
+    * Private Key: Set your private key.
+4. Drag & drop "debug" node.
+5. Connect "inject" to "function", "function" to "Einstein Platform Services" and "Einstein Platform Services" to
+ "debug".
+6. Click "Deploy" then click button of "inject" node.
+7. You can see a response of "API Usage" api call in a "debug" tab on the right side.
 
-### Einstein Platform Services のアカウント取得
-Salesforce Lightning Platform のアカウントに紐付け、あるいは、Heroku のアドオンとして払い出し、の2パターンがあります。  
-これから取得されるということであれば、Heroku のアドオンとして払い出しをお勧めします。
+### Image Recognition
+1. Drag & drop "inject" node.
+2. Drag & drop "function" node.
+    * Name: 
+```
+Test Image Classification
+```
+    * Function: 
+```
+msg.eps = {};
+msg.eps.feature = "IMAGECLASSIFICATION";
+msg.eps.modelid = "FoodImageClassifier";
+msg.eps.sampleLocation = "https://upload.wikimedia.org/wikipedia/commons/d/d3/Supreme_pizza.jpg";
+return msg;
+```
+3. Drag & drop "Einstein Platform Services" node.
+    * Account ID: Set your account id.
+    * Private Key: Set your private key.
+4. Drag & drop "debug" node.
+5. Connect "inject" to "function", "function" to "Einstein Platform Services" and "Einstein Platform Services" to
+ "debug".
+6. Click "Deploy" then click button of "inject" node.
+7. You can see a response of "Image Classification" api call in a "debug" tab on the right side. (Einstein platform service will probably respond that it is a pizza!)
 
-1. Heroku アカウントを作成 & クレジットカード情報を登録 (https://signup.heroku.com/jp)
-2. 何らかのアプリケーションを作成
-3. Einstein Vision アドオン(Free版で良い)をアプリケーションに追加(https://elements.heroku.com/addons/einstein-vision)
-4. アプリケーションの Settings -> Config Vars から Einstein Platform Services の Account ID と Private Key 情報を取得
-
-## テストフローの作成:その1(API Usage)
-1. 「injection」ノード
-    1. Timestampのまま特に変更なし
-2. 「function」ノード
-    1. Name
-        1. Test Api Usage
-    2. Function 
-        ```
-        msg.eps = {};
-        msg.eps.feature = "APIUSAGE";
-        return msg;
-        ```
-3. 「Einstein Platform Services」ノード
-    1. 手順2の通り
-4. 「debug」ノード
-    1. 特に設定変更なし
-5. 1→2、2→3、3→4と接続
-6. 配置と設定が完了したら、画面右上にある「Deploy」ボタンを押してロジックを公開
-7. 公開が完了したら、「インジェクション」ノードの左のボタンをクリックして、動作を確認
-8. 画面右ペインの「debug」タブで、ライセンスやAPI使用状況に関する情報が表示されたら動作成功
-
-## テストフローの作成:その2(Image Classification)
-1. 「injection」ノード
-    1. Timestampのまま特に変更なし
-2. 「function」ノード
-    1. Name
-        1. Test Prediction
-    2. Function
-        ```
-        msg.eps = {};
-        msg.eps.sampleLocation = "https://upload.wikimedia.org/wikipedia/commons/d/d3/Supreme_pizza.jpg";
-        msg.eps.modelid = "FoodImageClassifier";
-        return msg;
-        ```
-3. 「Einstein Platform Services」ノード
-    1. 手順2の通り
-4. 「debug」ノード
-    1. 特に設定変更なし
-5. 1→2、2→3、3→4と接続
-6. 配置と設定が完了したら、画面右上にある「Deploy」ボタンを押してロジックを公開
-7. 公開が完了したら、「インジェクション」ノードの左のボタンをクリックして、動作を確認
-8. 画面右ペインの「debug」タブで、”pizza”の予測結果が確認できたら動作成功
-
-## 仕様
-### ノードのパラメーター
+## Parameters
+### node
 * Name
-    * 表示名
+    * Set display name.
 * URL
-    * Einstein Platform Services のAPI起点(特に変更の必要なし。必ず最後に/をつける)
+    * Set Einstein Platform Services API endpoint URL.
 * Default Feature
-    * ノードの入力から実行する機能の指定がない場合に使われる機能(初期設定は画像仕分けのImage Classification)
-    * 設定可能値
-        * IMAGECLASSIFICATION
+    * Node use this feature if node can not define which feature use from an input paramters.
+    * Values
+        * IMAGECLASSIFICATION (<-default)
         * OBJECTDETECTION
         * SENTIMENT
         * INTENT
 * Default ModelId
-    * ノードの入力から使用するモデルの指定がない場合に使われるモデルID(初期設定は GeneralImageClassifier)
+    * Node use this model id if node can not define which model id use from an input patameters.(Default: GeneralImageClassifier)
 * Account ID
-    * Einstein Platform Services のアカウントID
+    * Set Einstein Platform Services's account id.
 * Private Key
-    * Einstein Platform Services のアカウントIDに紐づくプライベートKEY
+    * Set Einstein Platform Services's private key.
 
-### ノードの入力
-原則として msg オブジェクトに情報を追記
-
+### Input
 * msg.eps.feature
-    * Einstein Platform Services の何の機能を使用するか指定する。次の4つから選択する。
+    * Define feature to use.
         * APIUSAGE
         * IMAGECLASSIFICATION
         * OBJECTDETECTION
         * SENTIMENT
         * INTENT
 * msg.eps.modelid
-    * 使用するモデルIDを指定する
+    * Define modelid to use.
 * msg.eps.sampleBase64Content
-    * IMAGECLASSIFICATION/OBJECTDETECTIONの場合に使用
-    * 画像をbase64でエンコードした文字列を設定する
-* msg.eps.sampleLocation
-    * IMAGECLASSIFICATION/OBJECTDETECTIONの場合に使用
-    * 画像の URL を設定する
+    * Use this parameter if you select  IMAGECLASSIFICATION/OBJECTDETECTION feature.
+    * Set a character string encoded image with base64.
+* msg.eps.sampleLocation to predict
+    * Use this parameter if you select.  IMAGECLASSIFICATION/OBJECTDETECTION feature
+    * Set a image url to predict.
 * msg.eps.document
-    * SENTIMENT/INTENTの場合に使用
-    * テキストを設定する
+    * Use this parameter if you select SENTIMENT/INTENT feature.
+    * Set a text to predict.
 
-### ノードの出力
+### Output
 * msg.payload
-    * Einstein Platform Services の返り値(JSON)がそのまま、あるいは、ノードの実行エラー情報がJSON形式で格納される
+    * Einstein Platform Services raw response or node execution error. 
