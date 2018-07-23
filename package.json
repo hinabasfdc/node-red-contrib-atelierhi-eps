@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-atelierhi-eps",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node-RED node to easly access prediction api calls of Salesforce Einstein Platform Services. (Vision/Language)",
   "main": "node.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/hinabasfdc/node-red-contrib-atelierhi-eps.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Hiroyuki Inaba",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/hinabasfdc/node-red-contrib-atelierhi-eps/issues"
   },
@@ -24,5 +24,11 @@
   "dependencies": {
     "jsonwebtoken": "^8.3.0",
     "request": "^2.87.0"
-  }
+  },
+  "keywords": [
+    "salesforce",
+    "einstein vision",
+    "einstein language",
+    "einstein platform services"
+  ]
 }
