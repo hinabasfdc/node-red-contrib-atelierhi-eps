@@ -19,10 +19,7 @@ node-red-contrib-atelierhi-eps
 ### API Usage
 1. Drag & drop "inject" node.
 2. Drag & drop "function" node.
-    * Name: 
-```
-Test Api Usage
-```
+    * Name: "Test Api Usage"
     * Function: 
 ```
 msg.eps = {};
@@ -38,13 +35,10 @@ return msg;
 6. Click "Deploy" then click button of "inject" node.
 7. You can see a response of "API Usage" api call in a "debug" tab on the right side.
 
-### Image Recognition
+### Image Recognition (URL)
 1. Drag & drop "inject" node.
 2. Drag & drop "function" node.
-    * Name: 
-```
-Test Image Classification
-```
+    * Name: "Test Image Classification"
     * Function: 
 ```
 msg.eps = {};
@@ -53,7 +47,7 @@ msg.eps.modelid = "FoodImageClassifier";
 msg.eps.sampleLocation = "https://upload.wikimedia.org/wikipedia/commons/d/d3/Supreme_pizza.jpg";
 return msg;
 ```
-3. Drag & drop "Einstein Platform Services" node.
+3. Drag & drop "Einstein Platform Services" node. (You can reuse the same "Einstein Platform Services" node already deployed.)
     * Account ID: Set your account id.
     * Private Key: Set your private key.
 4. Drag & drop "debug" node.
@@ -61,6 +55,57 @@ return msg;
  "debug".
 6. Click "Deploy" then click button of "inject" node.
 7. You can see a response of "Image Classification" api call in a "debug" tab on the right side. (Einstein platform service will probably respond that it is a pizza!)
+
+### Image Recognition (Base64string)
+
+Create image file selection web page.  
+
+1. Drag & drop "http" node.
+    * Method: "GET"
+    * URL: "/eps_imagerecognition"
+2. Drag & drop "template" node.
+    * Template
+```
+<html>
+    <head>
+        <title>Einstein Vision with Node-RED</title>
+    </head>
+    <body>
+        <h1>Einstein Vision with Node-RED</h1>
+        <h2>Select an image file</h2>
+        <form  action="/eps_imagerecognition" method="post" enctype="multipart/form-data">
+            <input type="file" name="imagedata" accept="image/*" />
+            <input type="submit" value="Predict"/>
+        </form>
+    </body>
+</html>
+```
+3. Drag & drop "http response" node.
+4. Connect "http" to "template" and "template" to "http response".  
+
+Create recieve data and response flow.  
+
+1. Drag & drop "http" node.
+  * Method: "POST"
+  * URL: "eps_imagerecognition"
+2. Drag & drop "function" node.
+  * Name: "File to base64"
+  * Function:
+```
+msg.eps = {};
+msg.eps.sampleBase64Content = msg.req.files[0].buffer.toString('base64');
+return msg;
+```
+3. Drag & drop "Einstein Platform Services". (You can reuse the same "Einstein Platform Services" node already deployed.)
+    * Account ID: Set your account id.
+    * Private Key: Set your private key.
+4. Drag & drop "http response" node.
+5. Connect "http" to "function", "function" to "Einstein Platform Services" and "Einstein Platform Services" to
+ "http response".
+6. Click "Deploy".
+7. Access "[[YOUR_NODE-RED_URL]]/eps_imagerecognition" using browser.
+8. Select an image file then click "Predict" button.
+9. You can see raw response. 
 
 ## Parameters
 ### node
@@ -85,6 +130,7 @@ return msg;
 ### Input
 * msg.eps.feature
     * Define feature to use.
+    * Values.
         * APIUSAGE
         * IMAGECLASSIFICATION
         * OBJECTDETECTION
