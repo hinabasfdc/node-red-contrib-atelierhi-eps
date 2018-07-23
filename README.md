@@ -17,6 +17,7 @@ node-red-contrib-atelierhi-eps
 
 ## Sample Flow
 ### API Usage
+![API Usage](_res/eps_node-red_testapiusage_flow.png)
 1. Drag & drop "inject" node.
 2. Drag & drop "function" node.
     * Name: "Test Api Usage"
@@ -36,6 +37,8 @@ return msg;
 7. You can see a response of "API Usage" api call in a "debug" tab on the right side.
 
 ### Image Recognition (URL)
+![Image Recognition(URL)](_res/eps_node-red_testimageurl_flow.png)
+
 1. Drag & drop "inject" node.
 2. Drag & drop "function" node.
     * Name: "Test Image Classification"
@@ -57,6 +60,7 @@ return msg;
 7. You can see a response of "Image Classification" api call in a "debug" tab on the right side. (Einstein platform service will probably respond that it is a pizza!)
 
 ### Image Recognition (Base64string)
+![Image Recognition(Base64string)](_res/eps_node-red_testbase64_flow.png)
 
 Create image file selection web page.  
 
