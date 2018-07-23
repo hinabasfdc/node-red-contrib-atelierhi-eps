@@ -107,7 +107,7 @@ return msg;
 5. Connect "http" to "function", "function" to "Einstein Platform Services" and "Einstein Platform Services" to
  "http response".
 6. Click "Deploy".
-7. Access "[[YOUR_NODE-RED_URL]]/eps_imagerecognition" using browser.
+7. Access "[[YOUR_NODE-RED_URL]]/eps_imagerecognition" using web browser.
 8. Select an image file then click "Predict" button.
 9. You can see raw response. 
 
