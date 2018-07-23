@@ -1,5 +1,9 @@
 # node-red-contrib-atelierhi-eps
 A Node-RED node to easly access prediction APIs of the Salesforce Einstein Platform Services. (Vision/Language)
+* [Einstein Platform Services official site](https://einstein.ai).
+* This package include prediction APIs only.
+  * /predict, /detect, /sentiment, /intent
+  * not include management APIs (create dataset, training...)
 * Read this in other languages:[日本語](README.ja.md)
 ## Install
 * (Command) Run the following command in the root directory of your Node-RED install.
