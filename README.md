@@ -39,7 +39,7 @@ Salesforce Lightning Platform のアカウントに紐付け、あるいは、H
         return msg;
         ```
 3. 「Einstein Platform Services」ノード
-    1. 手順3.4の通り
+    1. 手順2の通り
 4. 「debug」ノード
     1. 特に設定変更なし
 5. 1→2、2→3、3→4と接続
@@ -61,7 +61,7 @@ Salesforce Lightning Platform のアカウントに紐付け、あるいは、H
         return msg;
         ```
 3. 「Einstein Platform Services」ノード
-    1. 手順3.4の通り
+    1. 手順2の通り
 4. 「debug」ノード
     1. 特に設定変更なし
 5. 1→2、2→3、3→4と接続
