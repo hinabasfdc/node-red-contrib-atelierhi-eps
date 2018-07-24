@@ -33,6 +33,8 @@ module.exports = function (RED) {
 
     if (config.account_id) {
       this.account_id = config.account_id;
+    } else if (!config.account_id && process.env.EINSTEIN_VISION_ACCOUNT_ID){
+      this.account_id = process.env.EINSTEIN_VISION_ACCOUNT_ID;
     } else {
       msg.payload = '{"message": "No account id."}';
       node.send(msg);
@@ -41,6 +43,8 @@ module.exports = function (RED) {
 
     if (config.account_id) {
       this.private_key = config.private_key;
+    } else if (!config.account_id && process.env.EINSTEIN_VISION_PRIVATE_KEY) {
+      this.private_key = process.env.EINSTEIN_VISION_PRIVATE_KEY;
     } else {
       msg.payload = '{"message": "No private key."}';
       node.send(msg);
