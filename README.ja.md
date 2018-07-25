@@ -3,9 +3,11 @@
 Node-RED で Salesforce が提供する画像認識や自然言語処理の AI 機能である Einstein Platform Services を簡単に使えるようにする追加ノードです。  
 注意: このサンプルコードは、あくまで機能利用の1例を示すためのものであり、コードの書き方や特定ライブラリの利用を推奨したり、機能提供を保証するものではありません。
 ## 利用方法(Node-RED "パレットの管理"からのインストール)
-
-
-
+* Menu -> Manage Palette -> Palette -> Install 次の文字列で検索し install をクリック
+```
+node-red-contrib-atelierhi-eps
+```
+![パレット管理からのインストール](_res/eps_node-red-installfrompalette.png)
 ## 利用方法(Github からソースコードをダウンロードしインストール)
 ### 1. 「Einstein Platform Services ノード」を Github からダウンロード
 1. $ cd [ワーク用ディレクトリに移動]
