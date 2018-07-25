@@ -149,7 +149,7 @@ return msg;
 * msg.eps.sampleBase64Content
     * Use this parameter if you select  IMAGECLASSIFICATION/OBJECTDETECTION feature.
     * Set a character string encoded image with base64.
-* msg.eps.sampleLocation to predict
+* msg.eps.sampleLocation
     * Use this parameter if you select.  IMAGECLASSIFICATION/OBJECTDETECTION feature
     * Set a image url to predict.
 * msg.eps.document

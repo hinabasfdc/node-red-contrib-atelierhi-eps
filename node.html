@@ -47,5 +47,91 @@
 </script>
 
 <script type="text/x-red" data-help-name="Einstein-Platform-Services">
-  <p>Einstein Platform Services common access library.</p>
+  <p>A Node-RED node to easly access prediction APIs of the Salesforce Einstein Platform Services. (Vision/Language)</p>
+  <h2>Parameters</h2>
+  <h3>node settings</h3>
+  <ul>
+    <li>Name</li>
+    <ul>
+      <li>Set display name.</li>
+    </ul>
+    <li>Name</li>
+    <ul>
+      <li>Set display name.</li>
+    </ul>
+    <li>URL</li>
+    <ul>
+      <li>Set Einstein Platform Services API endpoint URL.</li>
+    </ul>
+    <li>Default Feature</li>
+    <ul>
+      <li>A node use this feature if node can not define which feature use from an input paramters.</li>
+      <ul>
+        <li>IMAGECLASSIFICATION (<-default)</li>
+        <li>OBJECTDETECTION</li>
+        <li>SENTIMENT</li>
+        <li>INTENT</li>
+      </ul>
+    </ul>
+    <li>Default ModelId</li>
+    <ul>
+      <li>A node use this model id if node can not define which model id use from an input patameters.(Default: GeneralImageClassifier)</li>
+    </ul>
+    <li>Account Id</li>
+    <ul>
+      <li>Set Einstein Platform Services's account id.</li>
+    </ul>
+    <li>Private Key</li>
+    <ul>
+      <li>Set Einstein Platform Services's private key.</li>
+    </ul>
+  </ul>
+  <h3>Input</h3>
+  <ul>
+      <li>msg.eps.feature</li>
+      <ul>
+        <li>Define feature to use.</li>
+        <ul>
+          <li>APIUSAGE</li>
+          <li>IMAGECLASSIFICATION</li>
+          <li>OBJECTDETECTION</li>
+          <li>SENTIMENT</li>
+          <li>INTENT</li>
+        </ul>
+      </ul>
+  </ul>
+  <ul>
+    <li>msg.eps.modelid</li>
+    <ul>
+      <li>Define modelid to use.</li>
+    </ul>
+  </ul>
+  <ul>
+    <li>msg.eps.sampleBase64Content</li>
+    <ul>
+      <li>Use this parameter if you select  IMAGECLASSIFICATION/OBJECTDETECTION feature.</li>
+      <li>Set a character string encoded image with base64.</li>
+    </ul>
+  </ul>
+  <ul>
+    <li>msg.eps.sampleLocation</li>
+    <ul>
+      <li>Use this parameter if you select. IMAGECLASSIFICATION/OBJECTDETECTION feature.</li>
+      <li>Set a image url to predict.</li>
+    </ul>
+  </ul>
+  <ul>
+    <li>msg.eps.document</li>
+    <ul>
+      <li>Use this parameter if you select SENTIMENT/INTENT feature.</li>
+      <li>Set a text to predict.</li>
+    </ul>
+  </ul>
+  <h3>Output</h3>
+  <ul>
+    <li>msg.payload</li>
+    <ul>
+      <li>Einstein Platform Services raw response or node execution error.</li>
+    </ul>
+  </ul>
 </script>
