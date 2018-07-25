@@ -31,28 +31,34 @@ module.exports = function (RED) {
     this.default_feature = config.default_feature;
     this.default_modelid = config.default_modelid;
 
+    this.account_id = '';
     if (config.account_id) {
       this.account_id = config.account_id;
-    } else if (!config.account_id && process.env.EINSTEIN_VISION_ACCOUNT_ID){
+    } else if (!config.account_id && process.env.EINSTEIN_VISION_ACCOUNT_ID) {
       this.account_id = process.env.EINSTEIN_VISION_ACCOUNT_ID;
-    } else {
-      msg.payload = '{"message": "No account id."}';
-      node.send(msg);
-      return;
     }
 
-    if (config.account_id) {
+    this.private_key = '';
+    if (config.private_key) {
       this.private_key = config.private_key;
-    } else if (!config.account_id && process.env.EINSTEIN_VISION_PRIVATE_KEY) {
+    } else if (!config.private_key && process.env.EINSTEIN_VISION_PRIVATE_KEY) {
       this.private_key = process.env.EINSTEIN_VISION_PRIVATE_KEY;
-    } else {
-      msg.payload = '{"message": "No private key."}';
-      node.send(msg);
-      return;
     }
 
     let node = this;
     node.on('input', function (msg) {
+
+      // Account ID & Private Key Check
+      if (!node.account_id) {
+        msg.payload = '{"message": "No account id."}';
+        node.send(msg);
+        return;
+      }
+      if (!node.private_key) {
+        msg.payload = '{"message": "No private key."}';
+        node.send(msg);
+        return;
+      }
 
       // Call getting access token function & execute prediction api call
       getAccessToken(node, msg, (access_token) => {
@@ -157,7 +163,7 @@ module.exports = function (RED) {
       //console.log("[DEBUG]: Token is not expired.");
       cb(TOKEN);
 
-    // Get new token.
+      // Get new token.
     } else {
       //console.log("[DEBUG]: Token is expired.");
 
